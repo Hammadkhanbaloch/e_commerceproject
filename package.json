@@ -1,0 +1,25 @@
+{
+  "name": "readymade",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "concurrently \"npm --workspace server run dev\" \"npm --workspace client run dev\"",
+    "install:all": "npm install --workspaces",
+    "build": "npm --workspace client run build",
+    "start": "npm --workspace client run preview"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "private": true,
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
