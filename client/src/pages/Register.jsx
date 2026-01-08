@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { FaGoogle, FaFacebookF } from 'react-icons/fa'
+import { FaGoogle } from 'react-icons/fa'
 import AuthSide from '../components/AuthSide.jsx'
 import { apiFetch } from '../lib/api'
 import { useAuth } from '../lib/authContext'
@@ -161,26 +161,17 @@ export default function Register() {
                 </div>
               </div>
 
-              <div className="mt-6 grid grid-cols-2 gap-3">
+              <div className="mt-6 grid grid-cols-1 gap-3">
                 <div>
                   <button
                     type="button"
-                    onClick={() => setError('Continue with Google is not configured yet.')}
+                    onClick={() => {
+                      window.location.href = '/api/auth/google'
+                    }}
                     className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition duration-150"
                   >
                     <FaGoogle className="w-5 h-5 text-red-600" />
                     <span className="ml-3">Google</span>
-                  </button>
-                </div>
-
-                <div>
-                  <button
-                    type="button"
-                    onClick={() => setError('Continue with Facebook is not configured yet.')}
-                    className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition duration-150"
-                  >
-                    <FaFacebookF className="w-5 h-5 text-blue-600" />
-                    <span className="ml-3">Facebook</span>
                   </button>
                 </div>
               </div>

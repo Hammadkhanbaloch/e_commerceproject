@@ -57,6 +57,11 @@ export async function login(req, res, next) {
       throw new Error('Invalid credentials')
     }
 
+    if (!user.passwordHash) {
+      res.status(401)
+      throw new Error('This account uses social login. Please continue with Google.')
+    }
+
     const ok = await bcrypt.compare(String(password), user.passwordHash)
     if (!ok) {
       res.status(401)
@@ -76,4 +81,15 @@ export async function login(req, res, next) {
 
 export async function me(req, res) {
   res.json({ user: req.user })
+}
+
+export function oauthSuccess(req, res) {
+  const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173'
+  const token = signToken(req.user._id)
+  res.redirect(`${clientUrl}/signin#token=${encodeURIComponent(token)}`)
+}
+
+export function oauthFailure(req, res) {
+  const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173'
+  res.redirect(`${clientUrl}/signin#error=${encodeURIComponent('Social login failed')}`)
 }

@@ -2,8 +2,11 @@ import express from 'express'
 import cors from 'cors'
 import dotenv from 'dotenv'
 import morgan from 'morgan'
+import session from 'express-session'
+import passport from 'passport'
 
 import { connectDb } from './config/db.js'
+import { configurePassport } from './config/passport.js'
 import { notFound, errorHandler } from './middleware/errorHandler.js'
 
 import authRoutes from './routes/authRoutes.js'
@@ -16,6 +19,17 @@ const app = express()
 
 app.use(cors())
 app.use(express.json())
+
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || process.env.JWT_SECRET || 'dev_session_secret',
+    resave: false,
+    saveUninitialized: false,
+  })
+)
+
+app.use(passport.initialize())
+app.use(passport.session())
 
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'))
@@ -33,6 +47,9 @@ app.use(notFound)
 app.use(errorHandler)
 
 const port = Number(process.env.PORT || 5000)
+const apiBaseUrl = process.env.API_URL || `http://localhost:${port}`
+
+configurePassport({ apiBaseUrl })
 
 try {
   await connectDb(process.env.MONGO_URI)

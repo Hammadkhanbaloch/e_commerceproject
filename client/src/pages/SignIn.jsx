@@ -1,16 +1,47 @@
-import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { FaGoogle, FaFacebookF } from 'react-icons/fa'; // Requires react-icons package
+import { useEffect, useState } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { FaGoogle } from 'react-icons/fa'; // Requires react-icons package
 import AuthSide from '../components/AuthSide.jsx'
 import { apiFetch } from '../lib/api'
 import { useAuth } from '../lib/authContext'
 
 export default function SignIn() {
   const navigate = useNavigate()
+  const location = useLocation()
   const { loginWithToken } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+
+  useEffect(() => {
+    // OAuth callbacks redirect here with #token=... or #error=...
+    const hash = String(location.hash || '').replace(/^#/, '')
+    if (!hash) return
+
+    const params = new URLSearchParams(hash)
+    const token = params.get('token')
+    const oauthError = params.get('error')
+
+    async function finish() {
+      try {
+        if (token) {
+          await loginWithToken(token)
+          // clear hash
+          window.history.replaceState(null, '', location.pathname + location.search)
+          navigate('/shop', { replace: true })
+          return
+        }
+        if (oauthError) {
+          setError(oauthError)
+          window.history.replaceState(null, '', location.pathname + location.search)
+        }
+      } catch (e) {
+        setError(e?.message || 'Social login failed')
+      }
+    }
+
+    finish()
+  }, [location.hash, location.pathname, location.search, navigate, loginWithToken])
 
   async function onSubmit(event) {
     event.preventDefault()
@@ -158,28 +189,18 @@ export default function SignIn() {
                 </div>
               </div>
 
-              <div className="mt-6 grid grid-cols-2 gap-3">
+              <div className="mt-6 grid grid-cols-1 gap-3">
                 {/* Google Button (Using FaGoogle from react-icons) */}
                 <div>
                   <button
                     type="button"
-                    onClick={() => setError('Continue with Google is not configured yet.')}
+                    onClick={() => {
+                      window.location.href = '/api/auth/google'
+                    }}
                     className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition duration-150"
                   >
                     <FaGoogle className="w-5 h-5 text-red-600"/>
                     <span className="ml-3">Google</span>
-                  </button>
-                </div>
-                
-                {/* Facebook Button (Using FaFacebookF from react-icons) */}
-                <div>
-                  <button
-                    type="button"
-                    onClick={() => setError('Continue with Facebook is not configured yet.')}
-                    className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition duration-150"
-                  >
-                    <FaFacebookF className="w-5 h-5 text-blue-600"/>
-                    <span className="ml-3">Facebook</span>
                   </button>
                 </div>
               </div>
