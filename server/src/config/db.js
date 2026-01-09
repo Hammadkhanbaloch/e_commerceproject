@@ -5,6 +5,15 @@ export async function connectDb(mongoUri) {
     throw new Error('MONGO_URI is required')
   }
 
+  // Reuse existing connection in serverless environments (Vercel)
+  // readyState: 0=disconnected, 1=connected, 2=connecting, 3=disconnecting
+  if (mongoose.connection.readyState === 1) {
+    return
+  }
+  if (mongoose.connection.readyState === 2) {
+    return
+  }
+
   mongoose.set('strictQuery', true)
 
   console.log('[db] connecting...')

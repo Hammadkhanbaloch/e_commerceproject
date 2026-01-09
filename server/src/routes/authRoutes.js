@@ -17,7 +17,7 @@ router.get('/me', requireAuth, me)
 router.get('/google', (req, res, next) => {
 	if (!passport._strategy('google')) return redirectNotConfigured(res, 'Google')
 	next()
-}, passport.authenticate('google', { scope: ['profile', 'email'] }))
+}, passport.authenticate('google', { scope: ['profile', 'email'], session: false }))
 
 router.get(
 	'/google/callback',
@@ -25,7 +25,7 @@ router.get(
 		if (!passport._strategy('google')) return redirectNotConfigured(res, 'Google')
 		next()
 	},
-	passport.authenticate('google', { failureRedirect: '/api/auth/oauth/failure' }),
+	passport.authenticate('google', { failureRedirect: '/api/auth/oauth/failure', session: false }),
 	oauthSuccess
 )
 

@@ -1,55 +1,12 @@
-import express from 'express'
-import cors from 'cors'
 import dotenv from 'dotenv'
-import morgan from 'morgan'
-import session from 'express-session'
-import passport from 'passport'
 
 import { connectDb } from './config/db.js'
-import { configurePassport } from './config/passport.js'
-import { notFound, errorHandler } from './middleware/errorHandler.js'
-
-import authRoutes from './routes/authRoutes.js'
-import productRoutes from './routes/productRoutes.js'
-import orderRoutes from './routes/orderRoutes.js'
+import app from './app.js'
 
 dotenv.config()
 
-const app = express()
-
-app.use(cors())
-app.use(express.json())
-
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET || process.env.JWT_SECRET || 'dev_session_secret',
-    resave: false,
-    saveUninitialized: false,
-  })
-)
-
-app.use(passport.initialize())
-app.use(passport.session())
-
-if (process.env.NODE_ENV === 'development') {
-  app.use(morgan('dev'))
-}
-
-app.get('/api/health', (req, res) => {
-  res.json({ ok: true, service: 'readymade-api', date: new Date().toISOString() })
-})
-
-app.use('/api/auth', authRoutes)
-app.use('/api/products', productRoutes)
-app.use('/api/orders', orderRoutes)
-
-app.use(notFound)
-app.use(errorHandler)
-
 const port = Number(process.env.PORT || 5000)
-const apiBaseUrl = process.env.API_URL || `http://localhost:${port}`
-
-configurePassport({ apiBaseUrl })
+process.env.API_URL = process.env.API_URL || `http://localhost:${port}`
 
 try {
   await connectDb(process.env.MONGO_URI)
