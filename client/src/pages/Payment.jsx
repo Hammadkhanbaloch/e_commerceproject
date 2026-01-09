@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import ProductReviews from '../components/ProductReviews'
 import RatingStars from '../components/RatingStars'
 import { apiFetch } from '../lib/api'
+import { normalizeImageSrc } from '../lib/image'
 
 export default function Payment() {
   const { id } = useParams()
@@ -129,7 +130,7 @@ export default function Payment() {
           <div className="rounded-2xl border border-gray-200 bg-white overflow-hidden">
             <div className="h-80 bg-gray-100">
               <img
-                src={product.image}
+                src={normalizeImageSrc(product.image)}
                 alt={product.name}
                 className="h-full w-full object-cover"
                 onError={(e) => {

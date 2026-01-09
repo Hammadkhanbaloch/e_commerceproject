@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import RatingStars from '../components/RatingStars'
 import { useEffect, useState } from 'react'
 import { apiFetch } from '../lib/api'
+import { normalizeImageSrc } from '../lib/image'
 
 export default function WomenCategory() {
   const [items, setItems] = useState([])
@@ -60,7 +61,7 @@ export default function WomenCategory() {
               <div key={p._id} className="rounded-xl border border-gray-200 bg-white overflow-hidden">
               <div className="h-56 bg-gray-100">
                 <img
-                  src={p.image}
+                  src={normalizeImageSrc(p.image)}
                   alt={p.name}
                   className="h-full w-full object-cover"
                   loading="lazy"

@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { apiFetch } from '../lib/api'
 import RatingStars from '../components/RatingStars'
+import { normalizeImageSrc } from '../lib/image'
 
 export default function Shop() {
   const [items, setItems] = useState([])
@@ -61,7 +62,7 @@ export default function Shop() {
               <div key={p._id} className="rounded-xl border border-gray-200 bg-white overflow-hidden">
               <div className="h-52 bg-gray-100">
                 <img
-                  src={p.image}
+                  src={normalizeImageSrc(p.image)}
                   alt={p.name}
                   className="h-full w-full object-cover"
                   loading="lazy"

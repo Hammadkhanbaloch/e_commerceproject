@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { apiFetch } from '../lib/api'
 import RatingStars from '../components/RatingStars'
+import { normalizeImageSrc } from '../lib/image'
 
 export default function Home() {
   const [activeCategory, setActiveCategory] = useState('men')
@@ -181,7 +182,7 @@ export default function Home() {
                   <div key={p._id} className="rounded-xl border border-gray-200 bg-white overflow-hidden">
                     <div className="h-52 bg-gray-100">
                       <img
-                        src={p.image}
+                        src={normalizeImageSrc(p.image)}
                         alt={p.name}
                         className="h-full w-full object-cover"
                         loading="lazy"
@@ -242,8 +243,8 @@ export default function Home() {
               featured.map((p) => (
               <div key={p._id} className="rounded-xl border border-gray-200 bg-white overflow-hidden">
                 <div className="h-44 bg-gray-100">
-                  <img
-                    src={p.image}
+                    <img
+                      src={normalizeImageSrc(p.image)}
                     alt={p.name}
                     className="h-full w-full object-cover"
                     onError={(e) => {
