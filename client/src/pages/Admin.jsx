@@ -36,6 +36,8 @@ export default function Admin() {
   const [usersError, setUsersError] = useState('')
   const [usersLoading, setUsersLoading] = useState(false)
 
+  const [editingProductId, setEditingProductId] = useState(null)
+
   const [createForm, setCreateForm] = useState({
     name: '',
     category: 'Men',
@@ -48,6 +50,12 @@ export default function Admin() {
   const [createBusy, setCreateBusy] = useState(false)
 
   const isAdmin = user?.role === 'admin'
+
+  function resetProductForm() {
+    setEditingProductId(null)
+    setCreateForm({ name: '', category: 'Men', price: '', image: '', description: '', status: 'pending' })
+    setCreateError('')
+  }
 
   async function loadSummary() {
     setSummaryError('')
@@ -269,6 +277,25 @@ export default function Admin() {
                       </div>
 
                       <div className="flex flex-wrap items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setEditingProductId(p._id)
+                            setCreateError('')
+                            setCreateForm({
+                              name: p.name || '',
+                              category: p.category || 'Men',
+                              price: String(p.price ?? ''),
+                              image: p.image || '',
+                              description: p.description || '',
+                              status: p.status || 'pending',
+                            })
+                          }}
+                          className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-semibold text-gray-800 hover:bg-gray-100 transition"
+                        >
+                          Edit
+                        </button>
+
                         <select
                           value={p.status}
                           onChange={async (e) => {
@@ -289,6 +316,41 @@ export default function Admin() {
                           <option value="pending">pending</option>
                           <option value="confirmed">confirmed</option>
                         </select>
+
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            try {
+                              const name = window.prompt('Product name:', p.name)
+                              if (name == null) return
+                              const price = window.prompt('Price:', String(p.price ?? ''))
+                              if (price == null) return
+                              const category = window.prompt('Category (Men/Women/Child):', p.category)
+                              if (category == null) return
+                              const image = window.prompt('Image (URL or /public path):', p.image || '')
+                              if (image == null) return
+                              const description = window.prompt('Description:', p.description || '')
+                              if (description == null) return
+
+                              await apiFetch(`/api/admin/products/${p._id}`, {
+                                method: 'PUT',
+                                body: {
+                                  name,
+                                  price: Number(price),
+                                  category,
+                                  image,
+                                  description,
+                                },
+                              })
+                              await loadProducts()
+                            } catch (err) {
+                              setProductsError(err?.message || 'Failed to update product')
+                            }
+                          }}
+                          className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-semibold text-gray-800 hover:bg-gray-100 transition"
+                        >
+                          Edit
+                        </button>
 
                         <button
                           type="button"
@@ -316,8 +378,10 @@ export default function Admin() {
 
             <div className="rounded-xl border border-gray-200 bg-white">
               <div className="border-b border-gray-200 p-4">
-                <div className="text-base font-bold text-gray-900">Add product</div>
-                <div className="mt-1 text-xs text-gray-600">New products start as pending unless confirmed.</div>
+                <div className="text-base font-bold text-gray-900">{editingProductId ? 'Edit product' : 'Add product'}</div>
+                <div className="mt-1 text-xs text-gray-600">
+                  {editingProductId ? 'Update fields and save changes.' : 'New products start as pending unless confirmed.'}
+                </div>
               </div>
 
               <form
@@ -327,14 +391,25 @@ export default function Admin() {
                   setCreateError('')
                   setCreateBusy(true)
                   try {
-                    await apiFetch('/api/admin/products', {
-                      method: 'POST',
-                      body: {
-                        ...createForm,
-                        price: Number(createForm.price),
-                      },
-                    })
-                    setCreateForm({ name: '', category: 'Men', price: '', image: '', description: '', status: 'pending' })
+                    if (editingProductId) {
+                      await apiFetch(`/api/admin/products/${editingProductId}`, {
+                        method: 'PUT',
+                        body: {
+                          ...createForm,
+                          price: createForm.price === '' ? '' : Number(createForm.price),
+                        },
+                      })
+                    } else {
+                      await apiFetch('/api/admin/products', {
+                        method: 'POST',
+                        body: {
+                          ...createForm,
+                          price: Number(createForm.price),
+                        },
+                      })
+                    }
+
+                    resetProductForm()
                     await loadSummary()
                     await loadProducts()
                   } catch (err) {
@@ -415,16 +490,28 @@ export default function Admin() {
 
                 {createError ? <div className="text-sm text-red-700">{createError}</div> : null}
 
-                <button
-                  type="submit"
-                  disabled={createBusy}
-                  className={
-                    'w-full rounded-lg px-4 py-2 text-sm font-semibold text-white transition ' +
-                    (createBusy ? 'bg-emerald-400' : 'bg-emerald-600 hover:bg-emerald-700')
-                  }
-                >
-                  {createBusy ? 'Creating...' : 'Create product'}
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="submit"
+                    disabled={createBusy}
+                    className={
+                      'flex-1 rounded-lg px-4 py-2 text-sm font-semibold text-white transition ' +
+                      (createBusy ? 'bg-emerald-400' : 'bg-emerald-600 hover:bg-emerald-700')
+                    }
+                  >
+                    {createBusy ? (editingProductId ? 'Saving...' : 'Creating...') : editingProductId ? 'Save changes' : 'Create product'}
+                  </button>
+
+                  {editingProductId ? (
+                    <button
+                      type="button"
+                      onClick={resetProductForm}
+                      className="rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-800 hover:bg-gray-100 transition"
+                    >
+                      Cancel
+                    </button>
+                  ) : null}
+                </div>
               </form>
             </div>
           </div>
