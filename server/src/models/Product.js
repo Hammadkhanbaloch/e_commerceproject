@@ -11,6 +11,7 @@ const productSchema = new mongoose.Schema(
       required: true,
       enum: ['Men', 'Women', 'Child'],
     },
+    status: { type: String, default: 'pending', enum: ['pending', 'confirmed'] },
     ratingAvg: { type: Number, default: 0, min: 0, max: 5 },
     reviewsCount: { type: Number, default: 0, min: 0 },
   },

@@ -1,29 +1,6 @@
 import { Product } from '../models/Product.js'
 import { Review } from '../models/Review.js'
-
-function normalizeImageSrc(src) {
-  if (src == null) return ''
-
-  const raw = String(src).trim()
-  if (!raw) return ''
-
-  if (raw.startsWith('/')) return raw
-
-  if (raw.startsWith('http://') || raw.startsWith('https://')) {
-    try {
-      const url = new URL(raw)
-      if (url.hostname === 'localhost' || url.hostname === '127.0.0.1') {
-        return `${url.pathname}${url.search}${url.hash}`
-      }
-      return raw
-    } catch {
-      return raw
-    }
-  }
-
-  const cleaned = raw.replace(/^\.\/+/, '')
-  return cleaned.startsWith('/') ? cleaned : `/${cleaned}`
-}
+import { normalizeImageSrc } from '../lib/image.js'
 
 function withNormalizedImage(doc) {
   const obj = doc?.toObject ? doc.toObject() : doc
@@ -55,6 +32,8 @@ export async function listProducts(req, res, next) {
     const { category, q } = req.query
 
     const filter = {}
+    // Public catalog: show only confirmed products
+    filter.status = 'confirmed'
     if (category) {
       const raw = String(category).trim().toLowerCase()
       const normalized = raw === 'men' ? 'Men' : raw === 'women' ? 'Women' : raw === 'child' ? 'Child' : String(category).trim()
@@ -76,6 +55,10 @@ export async function getProductById(req, res, next) {
       res.status(404)
       throw new Error('Product not found')
     }
+    if (product.status !== 'confirmed') {
+      res.status(404)
+      throw new Error('Product not found')
+    }
     res.json({ item: withNormalizedImage(product) })
   } catch (err) {
     next(err)
@@ -84,7 +67,7 @@ export async function getProductById(req, res, next) {
 
 export async function createProduct(req, res, next) {
   try {
-    const { name, price, image, category, description } = req.body || {}
+    const { name, price, image, category, description, status } = req.body || {}
 
     if (!name?.trim() || price == null || !category?.trim()) {
       res.status(400)
@@ -101,6 +84,7 @@ export async function createProduct(req, res, next) {
       image: normalizeImageSrc(image || ''),
       category: normalizedCategory,
       description: description || '',
+      status: status === 'confirmed' ? 'confirmed' : 'pending',
     })
 
     res.status(201).json({ item: product })

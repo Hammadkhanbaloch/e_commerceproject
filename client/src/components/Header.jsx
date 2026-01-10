@@ -75,6 +75,18 @@ export default function Header() {
                 </NavLink>
               </>
             )}
+
+            {user?.role === 'admin' ? (
+              <NavLink
+                to="/admin"
+                className={({ isActive }) =>
+                  'px-3 py-2 text-sm font-medium rounded-md transition ' +
+                  (isActive ? 'text-emerald-700 bg-emerald-50' : 'text-gray-700 hover:bg-gray-50')
+                }
+              >
+                Admin
+              </NavLink>
+            ) : null}
           </nav>
         </div>
       </div>

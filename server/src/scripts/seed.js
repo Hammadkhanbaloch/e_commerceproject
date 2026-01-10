@@ -14,6 +14,7 @@ const products = [
     reviewsCount: 91,
     image: '/Men-product/b1.webp',
     description: 'Men product from Men-product folder.',
+    status: 'confirmed',
   },
   {
     name: 'Men Product 2',
@@ -23,6 +24,7 @@ const products = [
     reviewsCount: 64,
     image: '/Men-product/b2.jpg',
     description: 'Men product from Men-product folder.',
+    status: 'confirmed',
   },
   {
     name: 'Men Product 3',
@@ -32,6 +34,7 @@ const products = [
     reviewsCount: 156,
     image: '/Men-product/b4.jpg',
     description: 'Men product from Men-product folder.',
+    status: 'confirmed',
   },
   {
     name: 'Men Product 4',
@@ -41,6 +44,7 @@ const products = [
     reviewsCount: 79,
     image: '/Men-product/b6.jpg',
     description: 'Men product from Men-product folder.',
+    status: 'confirmed',
   },
 
   // Women (images from client/public/women-product)
@@ -52,6 +56,7 @@ const products = [
     reviewsCount: 88,
     image: '/women-product/m1.jpg',
     description: 'Women product from women-product folder.',
+    status: 'confirmed',
   },
   {
     name: 'Women Product 2',
@@ -61,6 +66,7 @@ const products = [
     reviewsCount: 61,
     image: '/women-product/m2.jpg',
     description: 'Women product from women-product folder.',
+    status: 'confirmed',
   },
   {
     name: 'Women Product 3',
@@ -70,6 +76,7 @@ const products = [
     reviewsCount: 140,
     image: '/women-product/m3.jpg',
     description: 'Women product from women-product folder.',
+    status: 'confirmed',
   },
   {
     name: 'Women Product 4',
@@ -79,6 +86,7 @@ const products = [
     reviewsCount: 73,
     image: '/women-product/m4.png',
     description: 'Women product from women-product folder.',
+    status: 'confirmed',
   },
 
   // Child
@@ -88,6 +96,7 @@ const products = [
     price: 19,
     image: '/auth-slides/1.jpg',
     description: 'Soft cotton t-shirt for kids.',
+    status: 'confirmed',
   },
   {
     name: 'Kids Hoodie',
@@ -95,6 +104,7 @@ const products = [
     price: 24,
     image: '/auth-slides/my.jpg',
     description: 'Cozy hoodie for kids.',
+    status: 'confirmed',
   },
 ]
 

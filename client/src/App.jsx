@@ -9,6 +9,7 @@ import WomenCategory from './pages/WomenCategory.jsx'
 import Register from './pages/Register.jsx'
 import SignIn from './pages/SignIn.jsx'
 import Profile from './pages/Profile.jsx'
+import Admin from './pages/Admin.jsx'
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="/category/men" element={<MenCategory />} />
         <Route path="/category/women" element={<WomenCategory />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/admin" element={<Admin />} />
       </Route>
 
       <Route path="/signin" element={<SignIn />} />

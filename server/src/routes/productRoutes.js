@@ -8,12 +8,12 @@ import {
   updateProductReview,
   deleteProductReview,
 } from '../controllers/productController.js'
-import { requireAuth } from '../middleware/auth.js'
+import { requireAdmin, requireAuth } from '../middleware/auth.js'
 
 const router = express.Router()
 
 router.get('/', listProducts)
-router.post('/', requireAuth, createProduct)
+router.post('/', requireAuth, requireAdmin, createProduct)
 
 router.get('/:id', getProductById)
 

@@ -15,6 +15,10 @@ export async function createOrder(req, res, next) {
       res.status(404)
       throw new Error('Product not found')
     }
+    if (product.status !== 'confirmed') {
+      res.status(400)
+      throw new Error('Product is not available')
+    }
 
     const quantity = Number(qty || 1)
     if (!Number.isFinite(quantity) || quantity < 1) {
