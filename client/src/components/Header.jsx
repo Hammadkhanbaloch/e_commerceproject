@@ -9,7 +9,7 @@ export default function Header() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="h-16 flex items-center justify-between">
           <Link to="/" className="flex items-baseline gap-2">
-            <span className="text-xl font-extrabold tracking-widest text-emerald-700">Ready-Made</span>
+            <span className="text-xl font-extrabold tracking-widest text-emerald-700">READY-MADE</span>
             <span className="hidden sm:inline text-sm text-gray-500">Clothing Store</span>
           </Link>
 

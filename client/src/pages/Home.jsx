@@ -50,7 +50,7 @@ export default function Home() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14 lg:py-20">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
             <div>
-              <p className="text-sm font-semibold text-emerald-700">ECO-STYLE</p>
+              <p className="text-sm font-semibold text-emerald-700">READY-MADE</p>
               <h1 className="mt-2 text-4xl sm:text-5xl font-extrabold tracking-tight text-gray-900">
                 Sustainable clothing for everyday life
               </h1>
